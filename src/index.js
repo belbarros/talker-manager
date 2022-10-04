@@ -11,6 +11,7 @@ app.use(express.json());
 const HTTP_OK_STATUS = 200;
 const HTTP_ERROR_STATUS = 400;
 const PORT = '3000';
+const PASS_MAX_LENGHT = 6;
 const talkersPath = path.resolve(__dirname, './talker.json');
 
 app.get('/talker', async (req, res) => {
@@ -35,6 +36,16 @@ app.post('/login', (req, res) => {
   }
   if (!password) {
     return res.status(HTTP_ERROR_STATUS).json({ message: 'O campo "password" é obrigatório' });
+  }
+  if (password.length < PASS_MAX_LENGHT) {
+    return res.status(HTTP_ERROR_STATUS).json(
+      { message: 'O "password" deve ter pelo menos 6 caracteres' },
+      );
+  }
+  if (!/[A-z0-9._]+@[a-z]+\.[a-z]{2,3}/.test(email)) {
+    return res.status(HTTP_ERROR_STATUS).json(
+      { message: 'O "email" deve ter o formato "email@email.com"' },
+      ); 
   }
   res.status(HTTP_OK_STATUS).json({ token: tokenGenerator(16) });
 });
