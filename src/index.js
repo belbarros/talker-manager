@@ -17,11 +17,11 @@ app.get('/talker', async (req, res) => {
 });
 
 app.get('/talker/:id', async (req, res) => {
-  const id = req.params.id;
+  const { id } = req.params;
   const talkers = JSON.parse(await fs.readFile(talkersPath));
   const filter = talkers.find((person) => person.id === Number(id));
   if (!filter) {
-    return res.status(404).send({ "message": "Pessoa palestrante não encontrada" });
+    return res.status(404).send({ message: 'Pessoa palestrante não encontrada' });
   }
   return res.status(HTTP_OK_STATUS).json(filter);
 });
