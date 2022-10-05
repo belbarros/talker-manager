@@ -85,6 +85,16 @@ app.delete('/talker/:id', validateAuth, async (req, res) => {
   res.status(204).json(newList);
 });
 
+app.get('/talker/search', validateAuth, async (req, res) => {
+  const { q } = req.query;
+  const talkers = JSON.parse(await fs.readFile(talkersPath));
+  const filter = talkers.filter((t) => talkers.name.includes(q));
+  if (!q) {
+    return res.status(HTTP_OK_STATUS).json(talkers);
+  }
+  res.status(HTTP_OK_STATUS).json(filter);
+});
+
 app.listen(PORT, () => {
   console.log('Online');
 });
