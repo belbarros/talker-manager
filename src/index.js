@@ -31,6 +31,16 @@ app.get('/talker', async (req, res) => {
   return res.status(HTTP_OK_STATUS).json(talkers);
 });
 
+app.get('/talker/search', validateAuth, async (req, res) => {
+  const talkers = JSON.parse(await fs.readFile(talkersPath));
+  const { q } = req.query;
+  const search = talkers.filter((t) => t.name.includes(q));
+  if (!q) {
+    return res.status(HTTP_OK_STATUS).json(talkers);  
+  }
+  return res.status(HTTP_OK_STATUS).json(search);
+});
+
 app.get('/talker/:id', async (req, res) => {
   const { id } = req.params;
   const talkers = JSON.parse(await fs.readFile(talkersPath));
@@ -83,16 +93,6 @@ app.delete('/talker/:id', validateAuth, async (req, res) => {
   const newList = talkers.filter((t) => t.id !== Number(id));
   await fs.writeFile(talkersPath, JSON.stringify(newList));
   res.status(204).json(newList);
-});
-
-app.get('/talker/search', validateAuth, async (req, res) => {
-  const { q } = req.query;
-  const talkers = JSON.parse(await fs.readFile(talkersPath));
-  const filter = talkers.filter((t) => t.name.includes(q));
-  if (!q) {
-    return res.status(HTTP_OK_STATUS).json(talkers);
-  }
-  res.status(HTTP_OK_STATUS).json(filter);
 });
 
 app.listen(PORT, () => {
